@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScopeGuard AI - Technical Spec</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #eee; background-color: #2d2d2d; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1, h2, h3 { color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        h1 { text-align: center; color: #4CAF50; }
+        .tag { display: inline-block; background: #424242; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 0.9em; margin-right: 5px; margin-bottom: 5px; }
+        .now { background: #2E7D32; }
+        .later { background: #EF6C00; }
+        .cut { background: #C62828; }
+        .section { margin: 30px 0; padding: 20px; background: #353535; border-radius: 8px; }
+        .code { background: #424242; padding: 10px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 0.9em; overflow-x: auto; }
+        .mermaid { text-align: center; margin: 30px 0; }
+        details { margin: 15px 0; padding: 10px; background: #424242; border-radius: 4px; }
+        summary { cursor: pointer; font-weight: bold; color: #fff; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul { padding-left: 20px; }
+        li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <h1>ScopeGuard AI</h1>
+    <p><em>Technical Specification</em></p>
+
+    <div class="section">
+        <h2>How This Works, In Plain Language</h2>
+        <p>The app is a single-page web application that runs locally in the browser. The user types or pastes a vague client request into a text area, clicks "Analyze Request", and the app sends that request to a local AI model (llama3.1:8b served by Ollama) with a prompt asking for a structured project brief. The AI returns text that the app parses into six sections: Request Summary, Tasks and Deliverables, Open Questions, Assumptions, Scope Boundaries, and Acceptance Criteria. When the input is too vague or ambiguous, a Clarity Notice appears above the six sections. The app displays those sections below the input area, preserving the original request for comparison. All processing happens client-side; no data is stored permanently.</p>
+    </div>
+
+    <div class="section">
+        <h2>The Core Journey Through the System</h2>
+        <ol>
+            <li>User opens the web app and sees the input form with an example request.</li>
+            <li>User edits or replaces the request text.</li>
+            <li>User clicks "Analyze Request".</li>
+            <li>App shows loading state, disables the button.</li>
+            <li>App constructs a prompt that includes the user's request and instructions to output the six sections, with inferred items labeled <code>⚠️ Assumed:</code> where the model makes assumptions.</li>
+            <li>App sends the prompt to the local Ollama API (http://localhost:11434/api/generate) with model llama3.1:8b and <code>"stream": false</code>.</li>
+            <li>App receives the complete non-streaming response.</li>
+            <li>App validates that the response contains all six section headings and basic structure; if not, it treats it as a failure.</li>
+            <li>On success, app displays the original request above, a Clarity Notice if the input was too vague, and the six sections below.</li>
+            <li>On failure (network error, missing sections, etc.), app shows an error message, keeps the input, and allows retry.</li>
+            <li>User can edit the request and repeat.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Stack</h2>
+        <ul>
+            <li><span class="tag now">✓</span> HTML5</li>
+            <li><span class="tag now">✓</span> CSS3 (vanilla, with possible use of CSS variables for theming)</li>
+            <li><span class="tag now">✓</span> JavaScript (ES2022, vanilla DOM manipulation)</li>
+            <li><span class="tag now">✓</span> Ollama API (local HTTP server) with model llama3.1:8b</li>
+        </ul>
+        <p><em>Rationale: Keeping the stack minimal reduces setup complexity and focuses on the AI integration challenge. No build step or framework is needed for this PoC.</em></p>
+    </div>
+
+    <div class="section">
+        <h2>Where It Runs and How Someone Tries It</h2>
+        <p>Runs in a modern browser (Chrome, Firefox, Edge, Safari) on Windows, macOS, or Linux. Requires Ollama running with the llama3.1:8b model pulled and CORS configured for local origins.</p>
+        <p><strong>Ollama CORS Setup</strong> (⚠️ Unverified — verify syntax for your Ollama version):</p>
+        <ul>
+            <li>Ad-hoc: <code>OLLAMA_ORIGINS=http://localhost:* http://127.0.0.1:* ollama serve</code> (space-separated; confirm separator)</li>
+            <li>Background service: Set <code>OLLAMA_ORIGINS</code> in service config or shell profile, then restart Ollama service</li>
+        </ul>
+        <p>To try: start Ollama with CORS enabled, ensure model is available (<code>ollama run llama3.1:8b</code> to warm up), open index.html in browser. For demo recording: use browser's screen recording or a tool like OBS to capture the interaction.</p>
+    </div>
+
+    <div class="section">
+        <h2>Look and Feel</h2>
+        <ul>
+            <li>Dark theme with charcoal background (#2d2d2d)</li>
+            <li>Readable typography (system font or -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif)</li>
+            <li>Restrained accents: green (#4CAF50) for confirmed information, yellow (#FFC107) for assumptions/items needing clarification, red (#F44336) for errors</li>
+            <li>Calm, focused, trustworthy feel with ample spacing and clear visual hierarchy</li>
+            <li>Concise text, avoiding unnecessary animations</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Components</h2>
+        <h3>Input Component</h3>
+        <p>What it does: Renders the form where the user enters or edits the client request, shows instructions, and provides the Analyze Request button.</p>
+        <p>What it talks to: Sends user requests to the Analysis Controller; receives loading/error/success states.</p>
+        <p><em>PRD ref: prd.md > Screens and Layout (input section)</em></p>
+
+        <h3>Analysis Controller</h3>
+        <p>What it does: Validates input, manages loading state, constructs the prompt for the AI (instructing the model to label inferred items with <code>⚠️ Assumed:</code> and output six sections), calls the Ollama API with <code>"stream": false</code>, processes the response, detects vague/ambiguous input to show a Clarity Notice, and updates the UI with either the structured brief or an error.</p>
+        <p>What it talks to: Input Component (for user actions and state), Output Component (to display results), Ollama API (external service).</p>
+        <p><em>PRD ref: prd.md > Features and Behavior > Request Analysis, Loading and State Management</em></p>
+
+        <h3>Output Component</h3>
+        <p>What it does: Renders the six sections of the project brief in a clearly formatted way, preserving the original request above for reference. Conditionally renders a Clarity Notice banner above the six sections when the Analysis Controller signals insufficient or ambiguous input.</p>
+        <p>What it talks to: Receives structured data and clarity flag from the Analysis Controller.</p>
+        <p><em>PRD ref: prd.md > Features and Behavior > Request Analysis (display of sections)</em></p>
+    </div>
+
+    <div class="section">
+        <h2>Data Model</h2>
+        <ul>
+            <li>Current request string (in memory)</li>
+            <li>Loading state (boolean)</li>
+            <li>Error state (string or null)</li>
+            <li>Analysis result: either null (not yet attempted/failed) or an object with the six section strings (requestSummary, tasksDeliverables, openQuestions, assumptions, scopeBoundaries, acceptanceCriteria)</li>
+            <li>Clarity flag (derived): boolean set by Analysis Controller when input is too vague or ambiguous; not a separate stored field</li>
+            <li>All state is ephemeral and lives only in the browser's memory while the page is open.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>File Structure</h2>
+        <div class="code">
+scopeguard-ai/
+├── index.html
+├── style.css
+├── app.js
+└── devpost/
+    ├── learner-profile.md
+    ├── scope.md
+    ├── prd.md
+    └── spec.md
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>External Services and Dependencies</h2>
+        <p><strong>Ollama API:</strong> POST http://localhost:11434/api/generate</p>
+        <ul>
+            <li>Payload: { "model": "llama3.1:8b", "prompt": "&lt;constructed prompt&gt;", "stream": false }</li>
+            <li>Response: JSON with "response" field containing the generated text.</li>
+            <li>No API key required; assumes Ollama is running locally with CORS enabled for local origins and model is available.</li>
+            <li>Documentation: <a href="https://github.com/ollama/ollama/blob/main/docs/api.md">https://github.com/ollama/ollama/blob/main/docs/api.md</a></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Important Failure Modes</h2>
+        <ul>
+            <li><strong>Ollama server not running</strong> → App shows error: "Unable to connect to AI service. Please ensure Ollama is running with the llama3.1:8b model."
+                <ul><li>Fallback: Preserve input, allow retry after user starts Ollama.</li></ul></li>
+            <li><strong>CORS blocked</strong> → App shows error: "CORS blocked. Ensure Ollama allows your origin — see setup instructions."
+                <ul><li>Fallback: Preserve input, allow retry after user restarts Ollama with correct CORS config.</li></ul></li>
+            <li><strong>Model not available / generation fails</strong> → App shows error: "AI analysis failed. Please check that the llama3.1:8b model is available and try again."
+                <ul><li>Fallback: Preserve input, allow retry.</li></ul></li>
+            <li><strong>Response missing required sections or basic structure</strong> → App treats as failure and shows: "AI response did not contain all expected sections. Please try again or rephrase your request."
+                <ul><li>Fallback: Preserve input, allow retry.</li></ul></li>
+            <li><strong>Network timeout</strong> → App shows error: "Request to AI service timed out. Please check your connection and try again."
+                <ul><li>Fallback: Preserve input, allow retry.</li></ul></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>What Was Simplified and Why</h2>
+        <ul>
+            <li><strong>No persistent storage</strong> → Instead of saving histories, the app works only with the current request. This keeps the PoC focused on the core AI analysis loop.</li>
+            <li><strong>Single model choice</strong> → We start with llama3.1:8b as the analysis engine; switching models would only require changing a constant.</li>
+            <li><strong>No backend server</strong> → The frontend talks directly to Ollama; this avoids extra complexity but assumes the user can run Ollama locally. For a production deployment, a thin backend might be added to hide the API endpoint, but it's unnecessary for the PoC.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Decisions and Open Issues</h2>
+        <ul>
+            <li><strong>Decision:</strong> Use llama3.1:8b as the initial AI model for analysis. <em>Tradeoff: Slightly lower maximum capability than larger models, but fits comfortably in local resources and avoids download.</em></li>
+            <li><strong>Decision:</strong> Frontend-only architecture with direct Ollama API calls. <em>Tradeoff: Exposes the Ollama port to the browser (CORS must be enabled; Ollama defaults to allowing localhost). For tighter security, a proxy could be added, but it's not needed for the PoC.</em></li>
+            <li><strong>Open question:</strong> How to best structure the prompt to reliably produce the six section format? This will be addressed during implementation by testing and refining the prompt based on actual outputs.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Architecture Diagram</h2>
+        <div class="mermaid">
+            <pre class="mermaid">
+flowchart TD
+    A[User] --> B[Input Component]
+    B --> C{Edit request?}
+    C -->|Yes| B
+    C -->|Click Analyze| D[Analysis Controller]
+    D --> E[Show loading state]
+    E --> F[Construct prompt for Ollama]
+    F --> G[Call Ollama API<br/>(localhost:11434/api/generate)]
+    G --> H{Response received?}
+    H -- No --> I[Show error]
+    I --> J[Allow retry]
+    J --> B
+    H -- Yes --> K{Validate 6 sections?}
+    K -- No --> I
+    K -- Yes --> L[Parse into six sections]
+    L --> M[Output Component]
+    M --> N[Display original request + six sections]
+    N --> O[User can re-analyze]
+    O --> B
+                </pre>
+            </div>
+            <p><em>If diagram doesn't load, see textual description below.</em></p>
+            <noscript>
+                <div class="code">
+Textual flow:
+1. User interacts with Input Component (edit request or click Analyze)
+2. On Analyze: Analysis Controller shows loading state
+3. Constructs prompt with user request + instructions for six sections
+4. Calls Ollama API (local)
+5. On failure: show error, allow retry
+6. On success: validate response has all six section headings
+7. Parse into section objects
+8. Output Component renders original request and six sections
+9. User can edit request and repeat
+                </div>
+            </noscript>
+        </div>
+    </div>
+
+    <!-- Mermaid CDN -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
+</body>
+</html>

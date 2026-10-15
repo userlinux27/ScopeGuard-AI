@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScopeGuard AI - Scope</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1, h2 { color: #2c3e50; }
+        .diagram { text-align: center; margin: 30px 0; }
+        .details { background: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; }
+        .section { margin: 25px 0; }
+        .tag { display: inline-block; background: #ecf0f1; color: #2c3e50; padding: 2px 8px; border-radius: 3px; font-size: 0.9em; margin-right: 5px; margin-bottom: 5px; }
+        .cut { color: #e74c3c; }
+        .later { color: #f39c12; }
+        .now { color: #27ae60; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>ScopeGuard AI</h1>
+    <p><em>An AI assistant that helps freelancers turn vague client requests into structured project briefs</em></p>
+
+    <div class="section">
+        <h2>The Unique Kernel</h2>
+        <p>ScopeGuard AI doesn't invent or assume missing details—it makes uncertainty visible by flagging what needs clarification, helping freelancers have better conversations with clients before work begins.</p>
+    </div>
+
+    <div class="section">
+        <h2>Who It's For</h2>
+        <p>A solo freelancer who builds websites, APIs, automations, or AI-powered applications and receives vague client requests like "I need a website with an AI assistant." Instead of guessing what the client wants or starting work with unclear expectations, they use ScopeGuard AI to analyze the request and identify what needs clarification before committing to the project.</p>
+    </div>
+
+    <div class="section">
+        <h2>The Core Loop</h2>
+        <p>The user opens the web app, sees a text area with an example vague client request (or enters their own), clicks "Analyze Request," and reviews the structured output containing: Request Summary, Tasks and Deliverables, Open Questions, Assumptions, Scope Boundaries, and Acceptance Criteria. They use this brief to guide their next conversation with the client.</p>
+    </div>
+
+    <div class="section diagram">
+        <h2>User Flow Diagram</h2>
+        <div id="mermaid-diagram">
+            <pre class="mermaid">
+flowchart TD
+    A[User opens web app] --> B[Sees text area with example request]
+    B --> C[Enters or edits client request]
+    C --> Clicks[Clicks "Analyze Request"]
+    Clicks --> D[ScopeGuard AI processes request]
+    D --> E[Displays structured brief]
+    E --> F[User reviews: Summary, Tasks, Questions, Assumptions, Boundaries, Criteria]
+    F --> G[Uses brief for client conversation]
+        style A fill:#3498db,color:#fff
+        style B fill:#2ecc71,color:#fff
+        style C fill:#f39c12,color:#fff
+        style D fill:#9b59b6,color:#fff
+        style E fill:#1abc9c,color:#fff
+        style F fill:#e67e22,color:#fff
+        style G fill:#e74c3c,color:#fff
+            </pre>
+        </div>
+        <p><em>If diagram doesn't load, see textual description below.</em></p>
+        <noscript>
+            <div class="details">
+                <strong>Textual flow description:</strong>
+                <ol>
+                    <li>User opens web app</li>
+                    <li>Sees text area with example request</li>
+                    <li>Enters or edits client request</li>
+                    <li>Clicks "Analyze Request"</li>
+                    <li>ScopeGuard AI processes request</li>
+                    <li>Displays structured brief with all sections</li>
+                    <li>User reviews the brief</li>
+                    <li>Uses brief for client conversation</li>
+                </ol>
+            </div>
+        </noscript>
+    </div>
+
+    <div class="section">
+        <h2>Why This Matters to the Learner</h2>
+        <p>This project combines programming and creativity to address a practical challenge the learner has observed: freelancers often start work based on incomplete client descriptions, leading to misunderstandings, scope creep, and unpaid work. By building ScopeGuard AI, they want to practice guiding an AI coding agent through a complete plan-first workflow while creating something useful that reflects their interest in AI-assisted development and turning technical ideas into practical tools.</p>
+    </div>
+
+    <div class="section">
+        <h2>What "Working" Looks Like</h2>
+        <p>A user opens a simple web page, sees a text area with a vague client request example (e.g., "I need a website with an AI assistant that can answer questions about my services"), clicks "Analyze Request," and sees a structured draft with all six sections clearly labeled. The output makes uncertainty visible—for example, if the client hasn't specified what data the AI assistant can use, that appears as an open question rather than an assumed detail. The user can review the result and see how an unclear request becomes a more actionable project brief they can use in a client conversation.</p>
+    </div>
+
+    <div class="section">
+        <h2>Proof of Concept Boundary</h2>
+        <div class="details now">
+            <strong>In scope (Now):</strong>
+            <span class="tag">Single-page web interface</span>
+            <span class="tag">Text input and analyze button</span>
+            <span class="tag">Processing of one client request</span>
+            <span class="tag">All six output sections</span>
+            <span class="tag">Demonstrable workflow with example</span>
+            <span class="tag">No accounts, database, payments</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Later Enhancements</h2>
+        <div class="details later">
+            <strong>Worth doing, just not now:</strong>
+            <span class="tag later">User accounts</span>
+            <span class="tag later">Collaboration features</span>
+            <span class="tag later">Project management integrations</span>
+            <span class="tag later">More sophisticated AI analysis</span>
+            <span class="tag later">Customizable output templates</span>
+            <span class="tag later">Deployment to live web service</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Explicitly Cut</h2>
+        <div class="details cut">
+            <strong>Not in proof of concept:</strong>
+            <span class="tag cut">User authentication</span>
+            <span class="tag cut">Database persistence</span>
+            <span class="tag cut">Payment processing</span>
+            <span class="tag cut">Team collaboration</span>
+            <span class="tag cut">Advanced AI features</span>
+            <span class="tag cut">Export to PDF</span>
+            <span class="tag cut">Custom branding</span>
+        </div>
+    </div>
+
+    <!-- Mermaid CDN -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

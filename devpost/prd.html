@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScopeGuard AI - Product Requirements</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #eee; background-color: #2d2d2d; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1, h2, h3 { color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        h1 { text-align: center; color: #4CAF50; }
+        .tag { display: inline-block; background: #424242; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 0.9em; margin-right: 5px; margin-bottom: 5px; }
+        .now { background: #2E7D32; }
+        .later { background: #EF6C00; }
+        .cut { background: #C62828; }
+        .section { margin: 30px 0; padding: 20px; background: #353535; border-radius: 8px; }
+        .criteria { background: #1B5E20; padding: 10px; margin: 10px 0; border-left: 3px solid #4CAF50; }
+        .warning { background: #BF360C; padding: 10px; margin: 10px 0; border-left: 3px solid #FF5722; }
+        .info { background: #0D47A1; padding: 10px; margin: 10px 0; border-left: 3px solid #2196F3; }
+        ul { padding-left: 20px; }
+        li { margin: 8px 0; }
+        code { background: #424242; padding: 2px 4px; border-radius: 3px; }
+        .mermaid { text-align: center; margin: 30px 0; }
+        details { margin: 15px 0; padding: 10px; background: #424242; border-radius: 4px; }
+        summary { cursor: pointer; font-weight: bold; color: #fff; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>ScopeGuard AI</h1>
+    <p><em>Product Requirements Document</em></p>
+
+    <div class="section">
+        <h2>The Core Journey</h2>
+        <ol>
+            <li>User opens the web app and sees the product name, tagline, input instructions, a text area with an example client request, and an "Analyze Request" button.</li>
+            <li>User pastes or types a client's request into the text area (can edit the example or replace it entirely).</li>
+            <li>User clicks the "Analyze Request" button.</li>
+            <li>Button changes to "Analyzing..." with a loading indicator while processing occurs.</li>
+            <li>Upon successful analysis, the structured brief appears below the input area in six clearly labeled sections.</li>
+            <li>User reviews the brief to understand what needs clarification before talking to the client.</li>
+            <li>User can edit the request and re-analyze to see how changes affect the output.</li>
+            <li>Success is demonstrated when the user can see how an unclear request becomes a more actionable project brief that reveals uncertainty rather than hiding it.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Screens and Layout</h2>
+        <p>Single-page web application with:</p>
+        <ul>
+            <li><strong>Header:</strong> Product name "ScopeGuard AI" and tagline "Turn vague client requests into clear project scopes before you start building."</li>
+            <li><strong>Input section:</strong> 
+                <ul>
+                    <li>Heading: "What does your client want to build?"</li>
+                    <li>Instruction: Brief explanation to paste the client's request, even if details are missing</li>
+                    <li>Text area: Large input field prefilled with example request, editable by user</li>
+                    <li>Button: Primary "Analyze Request" button</li>
+                    <li>Note: Brief explanation that the tool identifies missing information and assumptions</li>
+                </ul>
+            </li>
+            <li><strong>Output section (appears after analysis):</strong>
+                <ul>
+                    <li>Original request remains visible above</li>
+                    <li>Six clearly separated sections in order:
+                        <ul>
+                            <li>Request Summary</li>
+                            <li>Tasks and Deliverables</li>
+                            <li>Open Questions</li>
+                            <li>Assumptions</li>
+                            <li>Scope Boundaries</li>
+                            <li>Acceptance Criteria</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>No navigation, login, dashboard, or other unnecessary features</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Look and Feel</h2>
+        <p>Clean, minimalist, professional interface for freelancers:</p>
+        <ul>
+            <li>Dark theme with charcoal background</li>
+            <li>Readable typography with plenty of spacing</li>
+            <li>Restrained green and yellow accents:
+                <ul>
+                    <li>Green indicates clear or confirmed information</li>
+                    <li>Yellow highlights assumptions and items requiring clarification</li>
+                    <li>Red reserved for genuine errors or important warnings</li>
+                </ul>
+            </li>
+            <li>Color supports meaning rather than decoration</li>
+            <li>Calm, focused, and trustworthy feel</li>
+            <li>Clear visual hierarchy and well-separated sections</li>
+            <li>Concise text, avoiding excessive gradients, glowing effects, oversized headings, unnecessary animations</li>
+            <li>Prioritizes clarity and usability over visual spectacle</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Features and Behavior</h2>
+        <h3>Request Analysis</h2>
+        <p>As a freelancer using ScopeGuard AI, I want to submit a client request and receive a structured analysis that reveals uncertainty so I can have better conversations with clients.</p>
+        <ul>
+            <li><span class="tag now">✓</span> When a valid request is submitted, the app displays all six sections of the structured brief</li>
+            <li><span class="tag now">✓</span> The Request Summary accurately reflects the client's stated goal without inventing details</li>
+            <li><span class="tag now">✓</span> The Open Questions section lists specific, relevant questions the freelancer should ask the client</li>
+            <li><span class="tag now">✓</span> The Assumptions section explicitly labels any inferences as unconfirmed</li>
+            <li><span class="tag now">✓</span> The Scope Boundaries section distinguishes what appears included from what needs confirmation</li>
+            <li><span class="tag now">✓</span> The Acceptance Criteria section suggests testable conditions that need client agreement</li>
+            <li><span class="tag now">✓</span> Different requests produce appropriately different outputs (not a fixed template)</li>
+            <li><span class="tag now">✓</span> Changing the example or entering a different request produces an analysis based on the current input, not a fixed example or stale result</li>
+            <li><span class="tag now">✓</span> Very short/vague requests trigger a notice about needing more detail while still providing proportional analysis</li>
+            <li><span class="tag now">✓</span> If AI/provider is unavailable or analysis fails, preserve user input, show helpful non-technical error message, allow retrying, and never fabricate a successful result</li>
+        </ul>
+
+        <h3>Input Validation and Feedback</h3>
+        <p>As a user, I want clear feedback when I submit an empty request so I know to provide more information.</p>
+        <ul>
+            <li><span class="tag now">✓</span> Empty or whitespace-only submissions show an inline error message</li>
+            <li><span class="tag now">✓</span> Analysis does not start for invalid inputs</li>
+            <li><span class="tag now">✓</span> User can correct and resubmit after seeing the error</li>
+        </ul>
+
+        <h3>Loading and State Management</h3>
+        <p>As a user, I want to understand when the app is processing my request so I don't submit multiple times.</p>
+        <ul>
+            <li><span class="tag now">✓</span> Button changes to "Analyzing..." and disables during processing</li>
+            <li><span class="tag now">✓</span> Visible loading indicator appears during analysis</li>
+            <li><span class="tag now">✓</span> Button restores to "Analyze Request" after completion</li>
+            <li><span class="tag now">✓</span> Previous results are not displayed as belonging to new requests</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>States and Boundaries</h2>
+        <ul>
+            <li><strong>Initial state</strong> — User sees input interface with example request, no output displayed</li>
+            <li><strong>Processing state</strong> — Button shows "Analyzing..." with loading indicator, output from previous request hidden</li>
+            <li><strong>Success state</strong> — Structured brief displayed in six sections below input area, original request visible above</li>
+            <li><strong>Error state</strong> — Helpful error message displayed, original request preserved, ability to retry</li>
+            <li><strong>Empty input state</strong> — Inline validation message asking user to enter a client request</li>
+            <li><strong>Vague input state</strong> — Notice about needing more detail displayed above structured brief, all six sections still shown with proportional analysis</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Product Decisions</h2>
+        <ul>
+            <li><strong>Focus on solo freelancer as primary user</strong> — their reason: clearer user and simpler workflow for proof of concept</li>
+            <li><strong>Website requests involving AI assistant as primary example domain</strong> — their reason: makes demo concrete and helps evaluate output against realistic scenario</li>
+            <li><strong>Dark theme with charcoal background and restrained accents</strong> — their reason: prefers clean, minimalist, professional interface that feels like a practical tool</li>
+            <li><strong>Six-section structured output</strong> — their reason: ensures uncertainty is visible throughout (summary, tasks, questions, assumptions, boundaries, criteria)</li>
+            <li><strong>Single-page web app without accounts/payments</strong> — their reason: keeps proof of concept small and focused on core idea</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>What We're Building</h2>
+        <div class="details now">
+            <strong>In scope (Now):</strong>
+            <span class="tag now">Single-page web interface</span>
+            <span class="tag now">Text input and analyze button</span>
+            <span class="tag now">Processing of one client request</span>
+            <span class="tag now">All six output sections</span>
+            <span class="tag now">Input validation for empty requests</span>
+            <span class="tag now">Loading states and button disabling</span>
+            <span class="tag now">Proportional analysis for vague/short requests</span>
+            <span class="tag now">No accounts, database, payments</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Deferred From the POC</h2>
+        <div class="details later">
+            <strong>Worth doing, just not now:</strong>
+            <span class="tag later">User accounts</span>
+            <span class="tag later">Collaboration features</span>
+            <span class="tag later">Project management integrations</span>
+            <span class="tag later">More sophisticated AI analysis</span>
+            <span class="tag later">Customizable output templates</span>
+            <span class="tag later">Deployment to live web service</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Possible Later Enhancements</h2>
+        <p>A sentence or two each. No acceptance criteria. Still on the table for later.</p>
+        <ul>
+            <li>User accounts to save and revisit analyses</li>
+            <li>Collaboration features for teams or agencies</li>
+            <li>Integration with project management or proposal tools</li>
+            <li>More sophisticated AI analysis with multiple reasoning steps</li>
+            <li>Customizable output templates for different project types</li>
+            <li>Deployment to a live web service</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Non-Goals</h2>
+        <div class="details cut">
+            <strong>Specific things this project will NOT do:</strong>
+            <span class="tag cut">User authentication</span>
+            <span class="tag cut">Database persistence</span>
+            <span class="tag cut">Payment processing</span>
+            <span class="tag cut">Project management integrations</span>
+            <span class="tag cut">Team collaboration</span>
+            <span class="tag cut">Advanced AI features</span>
+            <span class="tag cut">Customizable branding</span>
+            <span class="tag cut">Export to PDF</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Open Questions</h2>
+        <details>
+            <summary>Click to view open questions</summary>
+            <ul>
+                <li>Specific AI implementation approach for generating the structured analysis — can wait for 4-spec</li>
+                <li>Exact wording and prioritization of open questions for different request types — can wait for 4-spec</li>
+                <li>Specific acceptance criteria examples for different domains — can wait for 4-spec</li>
+            </ul>
+        </details>
+    </div>
+
+    <div class="section">
+        <h2>User Flow Diagram</h2>
+        <div class="mermaid">
+            <pre class="mermaid">
+flowchart TD
+    A[User opens web app] --> B[Sees input interface with example]
+    B --> C[Enters/edits client request]
+    C --> Clicks[Clicks "Analyze Request"]
+    Clicks --> D{Request valid?}
+    D -- No --> E[Show inline error]
+    E --> C
+    D -- Yes --> F[Button: "Analyzing..." + loading]
+    F --> G[AI processes request]
+    G --> H{Analysis success?}
+    H -- No --> I[Show error message]
+    I --> J[Can retry]
+    J --> C
+    H -- Yes --> K[Display structured brief]
+    K --> L[Review: Summary, Tasks, Questions, Assumptions, Boundaries, Criteria]
+    L --> M[Edit request & re-analyze]
+    M --> C
+            </pre>
+        </div>
+        <p><em>If diagram doesn't load, see textual description below.</em></p>
+        <noscript>
+            <div class="info">
+                <strong>Textual flow description:</strong>
+                <ol>
+                    <li>User opens web app</li>
+                    <li>Sees input interface with example request</li>
+                    <li>Enters or edits client request</li>
+                    <li>Clicks "Analyze Request"</li>
+                    <li>If request invalid: show error, allow correction</li>
+                    <li>If request valid: button changes to "Analyzing..." with loading indicator</li>
+                    <li>AI processes request</li>
+                    <li>If analysis fails: show error message, allow retry</li>
+                    <li>If analysis succeeds: display structured brief with six sections</li>
+                    <li>User reviews the brief</li>
+                    <li>User can edit request and re-analyze</li>
+                </ol>
+            </div>
+        </noscript>
+    </div>
+
+    <!-- Mermaid CDN -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
+</body>
+</html>

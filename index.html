@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScopeGuard AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>ScopeGuard AI</h1>
+    <p class="tagline">Turn vague client requests into clear project scopes before you start building.</p>
+  </header>
+
+  <main>
+    <section class="input-section" aria-label="Client request input">
+      <h2>What does your client want to build?</h2>
+      <p>Paste the client's request, even if details are missing. The tool identifies missing information and assumptions.</p>
+      <textarea id="requestInput" rows="6" placeholder="Example: I need a website with AI features...">I need a website with AI features that helps users manage their projects. It should be modern and easy to use.</textarea>
+      <button id="analyzeBtn" onclick="analyzeRequest()">Analyze Request</button>
+      <div id="loadingIndicator" class="hidden" aria-live="polite">Analyzing...</div>
+      <div id="errorMessage" class="hidden" role="alert"></div>
+    </section>
+
+    <section id="clarityNotice" class="notice hidden" aria-label="Clarity notice">
+      <strong>Clarity Notice:</strong> The request appears vague or ambiguous. The analysis below is proportional to the available detail.
+    </section>
+
+    <section id="outputSection" class="output-section hidden" aria-label="Analysis results">
+      <h2>Structured Brief</h2>
+      <div id="originalRequestDisplay" class="original-request"></div>
+
+      <article class="section-card" aria-label="Request Summary">
+        <h3>Request Summary</h3>
+        <div id="requestSummary"></div>
+      </article>
+
+      <article class="section-card" aria-label="Tasks and Deliverables">
+        <h3>Tasks and Deliverables</h3>
+        <div id="tasksDeliverables"></div>
+      </article>
+
+      <article class="section-card" aria-label="Open Questions">
+        <h3>Open Questions</h3>
+        <div id="openQuestions"></div>
+      </article>
+
+      <article class="section-card" aria-label="Assumptions">
+        <h3>Assumptions</h3>
+        <div id="assumptions"></div>
+      </article>
+
+      <article class="section-card" aria-label="Scope Boundaries">
+        <h3>Scope Boundaries</h3>
+        <div id="scopeBoundaries"></div>
+      </article>
+
+      <article class="section-card" aria-label="Acceptance Criteria">
+        <h3>Acceptance Criteria</h3>
+        <div id="acceptanceCriteria"></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
