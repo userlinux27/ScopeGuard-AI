@@ -49,7 +49,10 @@ function analyzeRequest() {
 }
 
 function cleanMarkdown(text) {
-  return text.replace(/\\\*\\\*/g, '').replace(/\\\*/g, '').trim();
+  let cleaned = text.replace(/\\\*\\\*/g, '').replace(/\\\*/g, '');
+  cleaned = cleaned.replace(/⚠️\s*Assumed:\s*/g, '⚠️ Assumed: ');
+  cleaned = cleaned.replace(/(⚠️ Assumed:[^\n]+)\s*⚠️ Assumed:\s*/g, '$1 ');
+  return cleaned.trim();
 }
 
 function extractSection(text, heading) {
