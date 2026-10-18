@@ -9,7 +9,7 @@ Build mode: learn
 
 ## Slices
 
-- [ ] **1. Scaffold + input form + six-section output layout**
+- [x] **1. Scaffold + input form + six-section output layout**
   Becomes usable: A running single-page app with the input form, original request preserved, and six labeled output sections visible (even if empty before analysis).
   Why now: Proves the full UI path end-to-end before adding the AI integration.
   PRD ref: `prd.md > Screens and Layout`, `prd.md > The Core Journey` (steps 1-3, 9)
@@ -19,7 +19,7 @@ Build mode: learn
   Learner check: Open the app, see the input area and the six labeled sections below, and confirm the layout matches the spec's dark theme.
   Commit: `Scaffold app with input form and six-section layout`
 
-- [ ] **2. Analysis Controller + non-streaming Ollama (`"stream": false`)**
+- [x] **2. Analysis Controller + non-streaming Ollama (`"stream": false`)**
   Becomes usable: Clicking "Analyze Request" sends a prompt to Ollama and displays parsed results in the six sections.
   Why now: The core AI loop is the unique kernel; it must work before refining quality.
   PRD ref: `prd.md > Features and Behavior > Request Analysis`
@@ -29,7 +29,7 @@ Build mode: learn
   Learner check: Submit a request, observe loading state, then see the six sections populated from the AI response.
   Commit: `Add Analysis Controller with non-streaming Ollama integration`
 
-- [ ] **3. Clarity Notice + assumption labeling + error handling**
+- [x] **3. Clarity Notice + assumption labeling + error handling**
   Becomes usable: Vague input shows a Clarity Notice banner; inferred items labeled `⚠️ Assumed:`; CORS/timeout/missing-section errors handled gracefully.
   Why now: Quality and reliability are the spec's key requirements; they must be verified before considering the PoC complete.
   PRD ref: `prd.md > States and Boundaries` (Vague input state), `prd.md > Features and Behavior > Request Analysis` (assumptions labeled)
@@ -61,3 +61,5 @@ Reflection: [to be filled after build]
 Activity mode: [live app and editor, explicit static fallback, focused alternative, prior practice, or recap]
 
 ## Revisions
+
+- Slice 2 verified: real browser-to-Ollama test with vague request returned all six sections. Observed issues to address in Slice 3: model invents technologies (Google Cloud AI, Microsoft Azure); Scope Boundaries mislabels unconfirmed items as exclusions; Acceptance Criteria include subjective/non-testable statements; literal escaped Markdown (`\*\*`, `\*`) appears in output.

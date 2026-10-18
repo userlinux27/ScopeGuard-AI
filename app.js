@@ -34,12 +34,12 @@ function analyzeRequest() {
     const requiredSections = ['Request Summary', 'Tasks and Deliverables', 'Open Questions', 'Assumptions', 'Scope Boundaries', 'Acceptance Criteria'];
     const missing = requiredSections.filter(s => !responseText.includes(s));
     if (missing.length > 0) throw new Error('AI response did not contain all expected sections: ' + missing.join(', '));
-    document.getElementById('requestSummary').textContent = cleanMarkdown(extractSection(responseText, 'Request Summary'));
-    document.getElementById('tasksDeliverables').textContent = cleanMarkdown(extractSection(responseText, 'Tasks and Deliverables'));
-    document.getElementById('openQuestions').textContent = cleanMarkdown(extractSection(responseText, 'Open Questions'));
-    document.getElementById('assumptions').textContent = cleanMarkdown(extractSection(responseText, 'Assumptions'));
-    document.getElementById('scopeBoundaries').textContent = cleanMarkdown(extractSection(responseText, 'Scope Boundaries'));
-    document.getElementById('acceptanceCriteria').textContent = cleanMarkdown(extractSection(responseText, 'Acceptance Criteria'));
+    document.getElementById('requestSummary').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Request Summary')));
+    document.getElementById('tasksDeliverables').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Tasks and Deliverables')));
+    document.getElementById('openQuestions').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Open Questions')));
+    document.getElementById('assumptions').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Assumptions')));
+    document.getElementById('scopeBoundaries').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Scope Boundaries')));
+    document.getElementById('acceptanceCriteria').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Acceptance Criteria')));
   })
   .catch((err) => {
     const msg = err.message.includes('Failed to fetch') || err.message.includes('CORS') ? 'CORS blocked or unable to connect. Ensure Ollama allows your origin and is running.' : (err.message.includes('timed out') || err.message.includes('timeout')) ? 'Request to AI service timed out. Please check your connection and try again.' : 'AI analysis failed. Please check that the llama3.1:8b model is available and try again.';
@@ -49,9 +49,32 @@ function analyzeRequest() {
 }
 
 function cleanMarkdown(text) {
-  let cleaned = text.replace(/\\\*\\\*/g, '').replace(/\\\*/g, '');
-  cleaned = cleaned.replace(/⚠️\s*Assumed:\s*/g, '⚠️ Assumed: ');
-  cleaned = cleaned.replace(/(⚠️ Assumed:[^\n]+)\s*⚠️ Assumed:\s*/g, '$1 ');
+  // Remove lines that contain only backslash artifacts
+  let cleaned = text.split('\n').filter(line => {
+    const trimmed = line.trim();
+    return !(trimmed === '\\' || trimmed === '\\*' || trimmed === '\\*\\*' || trimmed === '**');
+  }).join('\n');
+
+  // Only strip escaped markers; preserve normal Markdown for renderMarkdownSafe
+  cleaned = cleaned
+    .replace(/\\\*\\\*/g, '')
+    .replace(/\\\* /g, '* ')
+    .replace(/\\\*\*\*\*/g, '');
+
+  // Remove leading + or escaped \+ at start of lines (common artifact)
+  cleaned = cleaned.replace(/^\s*\\?\+\s*/gm, '');
+
+  const assumedPrefix = '⚠️ Assumed:';
+  const damagedPrefix = /âš\s*ï¸\s*Assumed:/g;
+
+  cleaned = cleaned.replace(damagedPrefix, assumedPrefix);
+
+  const repeatedPrefix = /⚠️ Assumed:\s*(?:⚠️ Assumed:\s*)+/g;
+  cleaned = cleaned.replace(repeatedPrefix, assumedPrefix + ' ');
+
+  // Collapse multiple blank lines to single line break
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
   return cleaned.trim();
 }
 
@@ -63,6 +86,45 @@ function extractSection(text, heading) {
   let end = text.length;
   for (const h of nextHeadings) { if (h === heading) continue; const i = text.indexOf(h, start); if (i !== -1 && i < end) end = i; }
   return text.substring(start, end).trim() || '(No content for this section)';
+}
+
+function renderMarkdownSafe(text) {
+  // Security: escape HTML first using a temporary element
+  const div = document.createElement('div');
+  div.textContent = text;
+  let html = div.innerHTML;
+
+  // Preserve line breaks
+  html = html.replace(/\n/g, '<br>');
+
+  // Bold: **text** -> <strong>text</strong> (multiline-safe)
+  html = html.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');
+
+  // Headings: ### Heading -> <h3>Heading</h3>
+  html = html.replace(/###\s+(.+?)(?=<br>|$)/g, '<h3>$1</h3>');
+
+  // List markers at start of lines (after splitting by <br>)
+  const lines = html.split('<br>');
+  let inList = false;
+  const processed = lines.map(line => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+      const itemText = trimmed.substring(2);
+      if (!inList) { inList = true; return '<ul><li>' + itemText + '</li>'; }
+      return '<li>' + itemText + '</li>';
+    } else {
+      if (inList) { inList = false; return '</ul>' + line; }
+      return line;
+    }
+  });
+  if (inList) processed.push('</ul>');
+  html = processed.join('');
+
+  // Preserve special labels with styling
+  html = html.replace(/⚠️ Assumed:/g, '<span class="label-assumed">⚠️ Assumed:</span>');
+  html = html.replace(/Needs clarification:/g, '<span class="label-clarify">Needs clarification:</span>');
+
+  return html;
 }
 
 function showError(msg) { errorMessage.textContent = msg; errorMessage.classList.remove('hidden'); }
