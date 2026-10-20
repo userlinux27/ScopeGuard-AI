@@ -54,11 +54,11 @@ Build mode: learn
 - [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
 - [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: [to be filled after build]
-Route and stops: [to be filled after build]
-Edit outcome: [to be filled after build]
-Reflection: [to be filled after build]
-Activity mode: [live app and editor, explicit static fallback, focused alternative, prior practice, or recap]
+Activity and evidence: Created devpost/app-map.html based on index.html/style.css/app.js/test-slice3-regression.js and devpost docs. Evidence: app-map.html documents the finished-code flow, six sections, cleaning/safety and error handling. Regression tests pass: node test-slice3-regression.js (cleanMarkdown and renderMarkdownSafe).
+Route and stops: index.html (UI/sections) → app.js (analyzeRequest/extractSection/cleanMarkdown/renderMarkdownSafe/error handling) → test-slice3-regression.js (regression tests) → devpost/app-map.html (tour stops).
+Edit outcome: Updated app.js so previous results remain hidden while a new analysis is running and are shown only after the new response passes validation. Added devpost/app-map.html; this checklist section documents the project walkthrough..
+Reflection: Connected safety choices (textContent-first HTML escape, artifact-only cleaning) to the project goal of making uncertainty visible, not hiding it.
+Activity mode: Live app and editor. Project-grounded practice: extract-and-clean + safe rendering (HTML escaping).
 
 ## Revisions
 

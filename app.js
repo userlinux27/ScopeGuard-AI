@@ -14,7 +14,7 @@ function analyzeRequest() {
   analyzeBtn.disabled = true;
   loadingIndicator.classList.remove('hidden');
   errorMessage.classList.add('hidden');
-  outputSection.classList.remove('hidden');
+  outputSection.classList.add('hidden');
   document.getElementById('originalRequestDisplay').textContent = text;
   const isAmbiguous = text.length < 30 || !text.includes(' ');
   if (isAmbiguous) { clarityNotice.classList.remove('hidden'); } else { clarityNotice.classList.add('hidden'); }
@@ -34,6 +34,7 @@ function analyzeRequest() {
     const requiredSections = ['Request Summary', 'Tasks and Deliverables', 'Open Questions', 'Assumptions', 'Scope Boundaries', 'Acceptance Criteria'];
     const missing = requiredSections.filter(s => !responseText.includes(s));
     if (missing.length > 0) throw new Error('AI response did not contain all expected sections: ' + missing.join(', '));
+    outputSection.classList.remove('hidden');
     document.getElementById('requestSummary').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Request Summary')));
     document.getElementById('tasksDeliverables').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Tasks and Deliverables')));
     document.getElementById('openQuestions').innerHTML = renderMarkdownSafe(cleanMarkdown(extractSection(responseText, 'Open Questions')));
